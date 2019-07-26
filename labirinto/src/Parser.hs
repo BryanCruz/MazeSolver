@@ -17,12 +17,11 @@ pixelToText (PixelRGB8 r g b)
   | r * g * b == 0 = '#'
   | otherwise = ' '
 
-getMazeMatrix img = map (map pixelToText) $ getPixels $ convertRGB8 img
-
-printMazeMatrix name = do
+getMazeMatrix :: [Char] -> IO [[Char]]
+getMazeMatrix name = do
   let path = getImagePath name
   img <- readImage path
 
   case img of
-    Left s -> undefined
-    Right img -> print $ getMazeMatrix img
+    Left  _   -> return []
+    Right img -> return $ map (map pixelToText) $ getPixels $ convertRGB8 img
