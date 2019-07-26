@@ -1,6 +1,6 @@
-# labirinto
+# Labirinto
 
-Projeto para a disciplina 
+Projeto para a disciplina Paradigmas de Programação, da Universidade Federal do ABC, orientado pelo professor [Emilio Francesquini](https://github.com/francesquini).
 
 ## Proposta
 
