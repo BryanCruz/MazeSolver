@@ -1,10 +1,23 @@
 module Main where
 
 import Parser
+import Codec.Picture
 
-mazeName = "MAZE01"
+mazeName :: String
+mazeName = "MAZE03"
+
+getMazeImagePath :: String -> FilePath
+getMazeImagePath name = "src/mazes/" ++ name ++ ".png"
+
+mazePath :: String
+mazePath = getMazeImagePath mazeName
 
 main :: IO ()
 main = do
-  mazeMatrix <- getMazeMatrix mazeName
-  print $ mazeMatrix
+  -- Read image is an IO action
+  mazeImage <- readImage $ getMazeImagePath mazeName
+
+  -- Parse image to a Char Matrix
+  let mazeMatrix = getMatrixFromImage mazeImage
+
+  print mazeMatrix
