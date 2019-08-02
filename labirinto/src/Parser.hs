@@ -1,4 +1,4 @@
-module Parser (getMatrixFromImage) where
+module Parser (getMatrixFromImage, getImageFromMatrix) where
   
 import Data.Either
 import Control.Monad.ST
@@ -20,7 +20,7 @@ pixelToText (PixelRGB8 r g b)
 
 textToPixel c
   | c == '#'= PixelRGB8 0 0 0
-  | otherwise = PixelRGB8 100 100 100
+  | otherwise = PixelRGB8 255 255 255
 
 getMatrixFromImage :: Either String DynamicImage -> [String]
 getMatrixFromImage img =
@@ -28,5 +28,17 @@ getMatrixFromImage img =
     Left  _   -> [[]]
     Right img -> map (map pixelToText) $ getPixels $ convertRGB8 img
 
--- getImageFromMatrix :: [String] -> DynamicImage
--- getImageFromMatrix = map (map textToPixel)
+
+getImageFromMatrix :: [String] -> Image PixelRGB8
+getImageFromMatrix matrix = runST $ do
+  mimg <- newMutableImage imageWidth imageHeight
+  let convert x y | x >= imageWidth  = convert 0 (y + 1)
+                  | y >= imageHeight = unsafeFreezeImage mimg
+                  | otherwise = do
+                      writePixel mimg x y (textToPixel ((matrix !! y) !! x))
+                      convert (x + 1) y
+  convert 0 0
+    where
+      imageHeight = length matrix
+      imageWidth = length $ head matrix
+      

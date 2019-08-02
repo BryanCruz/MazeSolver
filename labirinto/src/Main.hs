@@ -15,13 +15,11 @@ mazePath = getMazeImagePath mazeName
 
 main :: IO ()
 main = do
-  -- -- Read image is an IO action
-  -- mazeImage <- readImage $ getMazeImagePath mazeName
-  -- -- Parse image to a Char Matrix
-  -- let mazeMatrix = getMatrixFromImage mazeImage
+  -- Read image is an IO action
+  mazeImage <- readImage $ getMazeImagePath mazeName
+  -- Parse image to a Char Matrix
+  let mazeMatrix = getMatrixFromImage mazeImage
   -- print mazeMatrix
 
-  -- pic é MutableImage
-  -- MutableImage -> DynamicImage (?)
-  pic <- createMutableImage 100 100 (100::Pixel8)
-  writePixel pic 5 5 255
+  -- Save Image is an IO action
+  savePngImage ("src/mazes/" ++ mazeName ++ "_saved.png") (ImageRGB8 (getImageFromMatrix mazeMatrix))
