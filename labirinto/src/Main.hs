@@ -22,4 +22,5 @@ main = do
   -- print mazeMatrix
 
   -- Save Image is an IO action
-  savePngImage ("src/mazes/" ++ mazeName ++ "_saved.png") (ImageRGB8 (getImageFromMatrix mazeMatrix))
+  savePngImage ("src/mazes/" ++ mazeName ++ "_resized.png") (ImageRGB8 (getImageFromMatrix mazeMatrix))
+  
