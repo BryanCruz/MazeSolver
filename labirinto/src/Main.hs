@@ -6,10 +6,10 @@ import Codec.Picture.Types
 import System.Environment
 
 originalPath :: String -> FilePath
-originalPath name = "src/mazes/" ++ name ++ ".png"
+originalPath name = "resources/mazes/" ++ name ++ ".png"
 
 outPath :: String -> FilePath
-outPath name = "src/mazes/" ++ name ++ "_out.png"
+outPath name = "output/mazes/" ++ name ++ "_out.png"
 
 toChar :: [[Int]] -> String
 toChar xss = concatMap (replaceLast . concat) css
