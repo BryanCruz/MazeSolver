@@ -1,12 +1,11 @@
 module Parser where
   
-import Data.Char
-import Data.Either
 import Control.Monad.ST
 
 import Codec.Picture
 import Codec.Picture.Types
 
+extractPixels :: Pixel a => Image a -> [[a]]
 extractPixels img = [[pixelAt img x y | x <- [0..width]] | y <- [0..height]]
   where
     width = imageWidth img - 1
@@ -30,21 +29,21 @@ digitToPixel p maxDigit
 getMatrixFromImage :: Either String DynamicImage -> [[Int]]
 getMatrixFromImage img =
   case img of
-    Left  _   -> error "Can't load image."
+    Left  err   -> error $ err ++ "Can't load image!"
     Right img -> map (map pixelToDigit) $ extractPixels $ convertRGB8 img
 
 
 getImageFromMatrix :: [[Int]] -> Image PixelRGB8
 getImageFromMatrix matrix = runST $ do
-  mimg <- newMutableImage imageWidth imageHeight
-  let convert x y | x >= imageWidth  = convert 0 (y + 1)
-                  | y >= imageHeight = unsafeFreezeImage mimg
+  mimg <- newMutableImage width height
+  let convert x y | x >= width  = convert 0 (y + 1)
+                  | y >= height = unsafeFreezeImage mimg
                   | otherwise = do
                       writePixel mimg x y (digitToPixel ((matrix !! y) !! x) maxDigit)
                       convert (x + 1) y
   convert 0 0
     where
       maxDigit = maximum $ concat matrix
-      imageHeight = length matrix
-      imageWidth = length $ head matrix
+      height = length matrix
+      width = length $ head matrix
       
