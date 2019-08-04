@@ -3,9 +3,7 @@ module Main where
 import Parser
 import Codec.Picture
 import Codec.Picture.Types
-
-mazeName :: String
-mazeName = "MAZE02"
+import System.Environment
 
 originalPath :: String -> FilePath
 originalPath name = "src/mazes/" ++ name ++ ".png"
@@ -24,6 +22,12 @@ toNumber css = map (map read) css
 
 main :: IO ()
 main = do
+  -- Get maze name from command line
+  args <- getArgs
+  let mazeName = if   length args >= 1
+                 then head args
+                 else "MAZE01"
+
   -- Read image is an IO action
   mazeImage <- readImage $ originalPath mazeName
 
@@ -35,4 +39,3 @@ main = do
 
   -- Save Image is an IO action
   savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))
-  
