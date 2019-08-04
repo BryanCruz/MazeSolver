@@ -5,22 +5,34 @@ import Codec.Picture
 import Codec.Picture.Types
 
 mazeName :: String
-mazeName = "MAZE03"
+mazeName = "MAZE02"
 
-getMazeImagePath :: String -> FilePath
-getMazeImagePath name = "src/mazes/" ++ name ++ ".png"
+originalPath :: String -> FilePath
+originalPath name = "src/mazes/" ++ name ++ ".png"
 
-mazePath :: String
-mazePath = getMazeImagePath mazeName 
+outPath :: String -> FilePath
+outPath name = "src/mazes/" ++ name ++ "_out.png"
+
+toChar :: [[Int]] -> String
+toChar xss = concatMap (replaceLast . concat) css
+  where
+    css = map (map (\x -> show x ++ " ")) xss
+    replaceLast ls = init ls ++ "\n"
+
+toNumber :: [[String]] -> [[Int]]
+toNumber css = map (map read) css
 
 main :: IO ()
 main = do
   -- Read image is an IO action
-  mazeImage <- readImage $ getMazeImagePath mazeName
-  -- Parse image to a Char Matrix
+  mazeImage <- readImage $ originalPath mazeName
+
+  -- Parse image to a Maze Matrix
   let mazeMatrix = getMatrixFromImage mazeImage
-  -- print mazeMatrix
+
+  -- For debugging, maze matrix may be printed
+  -- print $ toNumber $ map words $ lines mazeMatrix
 
   -- Save Image is an IO action
-  savePngImage ("src/mazes/" ++ mazeName ++ "_resized.png") (ImageRGB8 (getImageFromMatrix mazeMatrix))
+  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))
   
