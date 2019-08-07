@@ -1,5 +1,6 @@
 module Main where
 
+import Graph
 import Parser
 import Codec.Picture
 import Codec.Picture.Types
@@ -10,6 +11,12 @@ originalPath name = "resources/mazes/" ++ name ++ ".png"
 
 outPath :: String -> FilePath
 outPath name = "output/mazes/" ++ name ++ "_out.png"
+
+coords2Graph :: [(Int, Int)] -> Graph (Int, Int)
+coords2Graph ns = Graph [(Node (a, b), [Edge (Node (a, b), Node (c, d)) | (c, d) <- ns, manhattan (a, b) (c, d) == 1]) | (a, b) <- ns]
+  where
+    manhattan :: (Int, Int) -> (Int, Int) -> Int
+    manhattan (a, b) (c, d) = abs (a - c) + abs (b - d)
 
 main :: IO ()
 main = do
@@ -26,3 +33,4 @@ main = do
 
   -- Save Image is an IO action
   savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))
+
