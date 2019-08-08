@@ -1,8 +1,10 @@
+module Dfs where
+
 import Graph
 
 dfs :: Eq a => Graph a -> Node a -> Node a -> [Node a]
-dfs g u v  = getPath (dfs' g (u,u) v [] []) v
-      where
+dfs g u v  = buildPath (dfs' g (u,u) v [] []) v
+    where
         {-|
           Dfs' function returns a list of tuples, of type '(Node, Node)',
           which the first element is node visited and the second element is
@@ -32,15 +34,15 @@ dfs g u v  = getPath (dfs' g (u,u) v [] []) v
                 neighbors     = [(x, predX) | x <- (getAdjacent g u)]
                 predX         = u
 
-{-|
-  GetPath function returns the path between nodes u and v 
-  First argument is list of tuples, of type '(Node, Node)', which the first
-  element is the node and the second element is it's predecessor
-  Second argument is our node goal (a.k.a v in our dfs function)
--}
-getPath :: Eq a => [(Node a, Node a)] -> Node a -> [Node a]
-getPath [] _ = []
-getPath (n:ns) pred
-  | fst n == snd n = [fst n]
-  | fst n == pred  = getPath ns (snd n)++[pred]
-  | otherwise      = getPath ns pred
+        {-|
+          BuildPath function returns the path between nodes u and v 
+          First argument is list of tuples, of type '(Node, Node)', which the first
+          element is the node and the second element is it's predecessor
+          Second argument is our node goal (a.k.a v in our dfs function)
+        -}
+        buildPath :: Eq a => [(Node a, Node a)] -> Node a -> [Node a]
+        buildPath [] _ = []
+        buildPath (n:ns) pred
+          | fst n == snd n = [fst n]
+          | fst n == pred  = buildPath ns (snd n)++[pred]
+          | otherwise      = buildPath ns pred
