@@ -1,3 +1,5 @@
+module Bfs where
+
 import Graph
 
 {-|
@@ -7,7 +9,7 @@ import Graph
   Third argument is the target node of type 'Node'
   -}
 bfs :: Eq a => Graph a -> Node a -> Node a -> [Node a]
-bfs g u v = getPath (bfs' g (u,u) v [] []) v
+bfs g u v = buildPath (bfs' g (u,u) v [] []) v
       where
         {-|
           Bfs' function returns a list of tuples, of type '(Node, Node)',
@@ -38,16 +40,16 @@ bfs g u v = getPath (bfs' g (u,u) v [] []) v
                 neighbors     = [(x, predX) | x <- (getAdjacent g u)]
                 predX         = u
 
-{-|
-  GetPath function returns the path between nodes u and v 
-  First argument is list of tuples, of type '(Node, Node)', which the first
-  element is the node and the second element is it's predecessor
-  Second argument is our node goal (a.k.a v in our bfs function)
--}
-getPath :: Eq a => [(Node a, Node a)] -> Node a -> [Node a]
-getPath [] _ = []
-getPath (n:ns) pred
-  | fst n == snd n = [fst n]
-  | fst n == pred  = getPath ns (snd n)++[pred]
-  | otherwise      = getPath ns pred
+        {-|
+          BuildPath function returns the path between nodes u and v 
+          First argument is list of tuples, of type '(Node, Node)', which the first
+          element is the node and the second element is it's predecessor
+          Second argument is our node goal (a.k.a v in our bfs function)
+        -}
+        buildPath :: Eq a => [(Node a, Node a)] -> Node a -> [Node a]
+        buildPath [] _ = []
+        buildPath (n:ns) pred
+          | fst n == snd n = [fst n]
+          | fst n == pred  = buildPath ns (snd n)++[pred]
+          | otherwise      = buildPath ns pred
 
