@@ -6,8 +6,6 @@ import Codec.Picture
 import Codec.Picture.Types
 import System.Environment
 
-import Test.QuickCheck
-
 -- instance Arbitrary (Node n) where
 --   arbitrary = do
 --     x <- arbitrary
