@@ -10,7 +10,7 @@ originalPath :: String -> FilePath
 originalPath name = "resources/mazes/" ++ name ++ ".png"
 
 outPath :: String -> FilePath
-outPath name = "output/mazes/" ++ name ++ "_out.png"
+outPath name = "resources/mazes/" ++ name ++ "_out.png"
 
 coords2Graph :: [(Int, Int)] -> Graph (Int, Int)
 coords2Graph ns = Graph [(Node (a, b), [Edge (Node (a, b), Node (c, d)) | (c, d) <- ns, manhattan (a, b) (c, d) == 1]) | (a, b) <- ns]
@@ -33,4 +33,3 @@ main = do
 
   -- Save Image is an IO action
   savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))
-
