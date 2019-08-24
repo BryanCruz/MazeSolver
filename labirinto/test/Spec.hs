@@ -4,6 +4,8 @@ import Test.QuickCheck
 import Codec.Picture
 import Codec.Picture.Types
 
+import Control.Monad
+
 import Graph
 import qualified Parser
 
@@ -17,15 +19,28 @@ getMatrixes (img1, img2) = (m1, m2)
 
 -- instance Arbitrary (Node n) where
 instance Arbitrary a => Arbitrary (Node a) where
-  arbitrary = do
-    x <- arbitrary
-    return $ Node x
+  arbitrary = Node <$> arbitrary
 
 instance Arbitrary a => Arbitrary (Edge a) where
   arbitrary = do
     x <- arbitrary
     y <- arbitrary
     return $ Edge (x, y)
+
+instance (Eq a, Arbitrary a) => Arbitrary (Graph a) where
+  arbitrary = do
+    nodeList <- listOf arbitrary
+
+    edgeLists <- mapM (genEdgeList nodeList) nodeList
+
+    return $ Graph (zip nodeList edgeLists)
+      where
+        genEdgeList nodeList n = do
+          let nodeList' = filter (/= n) nodeList
+          adjacents <- sublistOf =<< shuffle nodeList'
+
+          let edges = map (\n' -> Edge (n, n')) adjacents
+          return edges
 
 main :: IO ()
 main = hspec $ do
@@ -76,6 +91,8 @@ main = hspec $ do
   describe "Graph" $ do
     it "Test getFst" $ property testFst
     it "Test getSnd" $ property testSnd
+    it "Test graph" $ property testGraph
+    -- TODO: it "Test adjacent" $ property testAdjcencies
 
 
 testFst :: Edge (Node Int, Node Int) -> Bool
@@ -83,3 +100,10 @@ testFst e@(Edge (a, b)) = getFst e == a
 
 testSnd :: Edge (Node Int, Node Int) -> Bool
 testSnd e@(Edge (a, b)) = getSnd e == b
+
+-- Test if all the edges returned from solvers are present in the original graph
+
+testGraph :: Graph [(Node Int, [Edge Int])] -> Bool
+testGraph (Graph [(n, [])]) = True
+testGraph (Graph [(n, l)]) = True
+testGraph (Graph []) =  True
