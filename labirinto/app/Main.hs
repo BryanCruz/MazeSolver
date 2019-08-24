@@ -6,11 +6,18 @@ import Codec.Picture
 import Codec.Picture.Types
 import System.Environment
 
+import Test.QuickCheck
+
+-- instance Arbitrary (Node n) where
+--   arbitrary = do
+--     x <- arbitrary
+--     return $ Node x
+
 originalPath :: String -> FilePath
 originalPath name = "resources/mazes/" ++ name ++ ".png"
 
 outPath :: String -> FilePath
-outPath name = "resources/mazes/" ++ name ++ "_out.png"
+outPath name = "output/mazes/" ++ name ++ "_out.png"
 
 coords2Graph :: [(Int, Int)] -> Graph (Int, Int)
 coords2Graph ns = Graph [(Node (a, b), [Edge (Node (a, b), Node (c, d)) | (c, d) <- ns, manhattan (a, b) (c, d) == 1]) | (a, b) <- ns]
