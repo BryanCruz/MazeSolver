@@ -17,7 +17,7 @@ library MazeSolver
   hs-source-dirs:     src
   default-language:   Haskell2010
   build-depends:      base >= 4.7 && < 5, JuicyPixels
-  exposed-modules:    Parser, Graph, GraphConverter, Bfs
+  exposed-modules:    Parser, Graph, GraphConverter, Bfs, Dfs
 
 executable labirinto
   hs-source-dirs:     app

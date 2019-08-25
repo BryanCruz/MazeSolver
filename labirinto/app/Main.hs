@@ -5,6 +5,7 @@ import Codec.Picture.Types
 import System.Environment
 
 import Bfs
+import Dfs
 import Graph
 import Parser
 import GraphConverter
@@ -35,7 +36,7 @@ main = do
   let mazeMatrix = getMatrixFromImage mazeImage
   let graph = matrixToGraph mazeMatrix
 
-  let path = bfs graph (head $ getNodes graph) (last $ getNodes graph)
+  let path = dfs graph (head $ getNodes graph) (last $ getNodes graph)
 
   let matrixSolved = drawPath mazeMatrix path
 
