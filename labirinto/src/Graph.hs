@@ -17,8 +17,14 @@ getFst (Edge (a, b)) = a
 getSnd :: Edge a -> Node a
 getSnd (Edge (a, b)) = b
 
+-- Given a graph and a node, returns list of adjacent nodes
 getAdjacent :: Eq a => Graph a -> Node a -> [Node a]
 getAdjacent (Graph vs) u = concat [map getSnd es | (n, es) <- vs, n == u]
 
+-- Returns list of nodes in a graph
 getNodes :: Graph a -> [Node a]
 getNodes (Graph ns) = map fst ns
+
+-- Returns list of edges in a graph
+getEdges :: Graph a -> [Edge a]
+getEdges (Graph ns) = concatMap snd ns

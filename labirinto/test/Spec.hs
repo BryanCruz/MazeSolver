@@ -6,6 +6,7 @@ import Codec.Picture.Types
 
 import Control.Monad
 
+import Bfs
 import Graph
 import qualified Parser
 
@@ -30,7 +31,6 @@ instance Arbitrary a => Arbitrary (Edge a) where
 instance (Eq a, Arbitrary a) => Arbitrary (Graph a) where
   arbitrary = do
     nodeList <- listOf arbitrary
-
     edgeLists <- mapM (genEdgeList nodeList) nodeList
 
     return $ Graph (zip nodeList edgeLists)
@@ -91,8 +91,8 @@ main = hspec $ do
   describe "Graph" $ do
     it "Test getFst" $ property testFst
     it "Test getSnd" $ property testSnd
-    it "Test graph" $ property testGraph
-    -- TODO: it "Test adjacent" $ property testAdjcencies
+    it "Test adjacent" $ property $ testNodesPresent bfs
+    it "Test adjacent" $ property $ testEdgesPresent bfs
 
 
 testFst :: Edge (Node Int, Node Int) -> Bool
@@ -101,9 +101,27 @@ testFst e@(Edge (a, b)) = getFst e == a
 testSnd :: Edge (Node Int, Node Int) -> Bool
 testSnd e@(Edge (a, b)) = getSnd e == b
 
--- Test if all the edges returned from solvers are present in the original graph
+-- Test if all nodes returned from solvers are present in the original graph
+testNodesPresent :: (Graph Int -> Node Int -> Node Int -> [Node Int]) -> Graph Int -> Bool
+testNodesPresent alg g = all (`elem` graphNodes) pathNodes
+  where
+    graphNodes = getNodes g
+    pathNodes  = if not $ null graphNodes
+                 then alg g (head graphNodes) (last graphNodes)
+                 else []
 
-testGraph :: Graph [(Node Int, [Edge Int])] -> Bool
-testGraph (Graph [(n, [])]) = True
-testGraph (Graph [(n, l)]) = True
-testGraph (Graph []) =  True
+-- Graph a -> Node a -> Node a -> [Node a]
+-- Test if all edges returned from solvers are present in the original graph
+testEdgesPresent :: (Graph Int -> Node Int -> Node Int -> [Node Int]) -> Graph Int -> Bool
+testEdgesPresent alg g = all (`elem` graphEdges) pathEdges
+  where
+    graphEdges = getEdges g
+    graphNodes = getNodes g
+
+    pathNodes  = alg g (head graphNodes) (last graphNodes)
+    pathEdges  = if not $ null graphEdges
+                 then nodesToEdges pathNodes
+                 else []
+
+nodesToEdges :: [Node a] -> [Edge a]
+nodesToEdges ns = zipWith (curry Edge) ns (tail ns)
