@@ -4,13 +4,16 @@ import qualified Data.Map.Strict as Map
 
 import Graph
 
-dfs :: (Ord a, Eq a) => Graph a -> Node a -> Node a -> [Node a]
-dfs g st end = dfs' g' st end st
+dfs :: (Ord a, Eq a, Show a) => Graph a -> Node a -> Node a -> [Node a]
+dfs g st end = dfs' gMap st end
   where
-    g' = foldr (\n m -> insert n True m) empty g
+    gMap = foldr (\(Node n) m -> Map.insert n True m) Map.empty (getNodes g)
+    dfs' gMap st end | st /= end = if null recursion'  then [] else st : (concat recursion')
+                     | otherwise = [st]
+      where
+        recursion' = recursion gMap
 
-    dfs' g st end par | st /= end = if null recursion g' then [] else st : concat recursion
-                      | otherwise = [st]
-
-    recursion g' = dropWhile null $ map (\v -> dfs' g v end st) $ filter (\n -> g' ! n) $ getAdjacent g st
-        
+        recursion gMap = filter (\x -> not $ null x) $ map (\v -> dfs' gMap' v end) notVisitedYet
+          where
+            notVisitedYet = filter (\(Node n) -> gMap Map.! n) $ getAdjacent g st
+            gMap' = foldr (\(Node n) m -> Map.insert n False m) gMap notVisitedYet
