@@ -17,9 +17,9 @@ Além disso, o programa mostra o tempo de execução de cada algoritmo
 
 ## Execução
 
--   `stack run [mazeName]` roda o programa para os 3 algoritmos (BFS, DFS e A\*) no labirinto passado como parâmetro. Para isso, a imagem de nome `mazeName.png` deve existir na pasta `labirinto/resources/mazes`. As imagem de saída deverão se encontrar na pasta `labirinto/output/mazes` (é importante garantir que a pasta existe antes da execução do programa).
+-   `stack run [mazeName]` roda o programa para os 3 algoritmos (BFS, DFS e A\*) no labirinto passado como parâmetro. Para isso, a imagem de nome `mazeName` deve existir na pasta `labirinto/resources/mazes` com o nome `mazeName.png`. As imagem de saída irão ser criadas na pasta `labirinto/output/mazes` (é importante garantir que a pasta existe antes da execução do programa).
 
--   `stack test` roda os testes (unitários e de integração) do programa. Os testes são especificados em `labirinto/test/Spec.hs`.
+-   `stack test` roda os testes do programa. Os testes são especificados em `labirinto/test/Spec.hs`.
 
 -   #### Observação: Os labirintos MAZE00 - MAZE05 são usados nos testes. Assim, é importante que eles estejam presentes na pasta `labirinto/resources/mazes` ao rodar o comando `stack test`
 
@@ -40,9 +40,11 @@ Assim, a estrutura do projeto deve se econtrar na forma:
 
 A maior dificuldade enfrentada foi a integração de todos os módulos. Módulos desenvolvidos independentemente tiveram alguma dificuldade para serem integrados, o que resultou falhas nos testes de integração desenvolvidos.
 
-Além disso, houve também um erro de planejamento que, somado à semana de provas e de entragas de outos trabalhos, resultou na necessidade de grandes esforços no fim de semana da entrega.
+Outra dificuldade foi implementar os algoritmos de busca em grafo, pois não estamos acostumados a escrever algoritmos desse tipo em linguagens funcionais, portanto levamos bastante t
 
-Os testes foram escritos com o Hspec, sendo que algum deles usam o QuickCheck. Descobrir como criar testes e propriedades com essa biblioteca foi bem trabalhoso. Em específico, implementar a classe Arbitrary para os nos, arestas e grafos (Node, Edge e Graph) foi especialmente desafiador (essa implementação se encontra no arquivo `labirinto/test/Spec.hs`). Contudo, no final, deu certo, e foi possível realizar testes com Grafos Arbitrários.
+Além disso, houve também um erro de planejamento que, somado à semana de provas e de entregas de outros trabalhos, resultou na necessidade de grandes esforços no fim de semana da entrega.
+
+Os testes foram escritos com o Hspec, sendo que algum deles usam o QuickCheck. Descobrir como criar testes e propriedades com essa biblioteca foi bem trabalhoso. Em específico, implementar a classe Arbitrary para os nós, arestas e grafos (Node, Edge e Graph) foi especialmente desafiador (essa implementação se encontra no arquivo `labirinto/test/Spec.hs`). Contudo, no final, deu certo, e foi possível realizar testes com Grafos Arbitrários.
 
 ## Créditos
 

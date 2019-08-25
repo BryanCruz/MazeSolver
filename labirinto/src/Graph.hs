@@ -34,3 +34,9 @@ getNodes (Graph ns) = map fst ns
 -- Returns list of edges in a graph
 getEdges :: Graph a -> [Edge a]
 getEdges (Graph ns) = concatMap snd ns
+
+-- addEdge :: Graph a -> Node a -> Node a -> Graph a
+-- addEdge (Graph ns) u v 
+--
+-- addNode :: Graph a -> Node a -> Graph a
+-- addNode (Graph ns) u = Graph (if u `elem` $ map fst ns then g else (u, []):ns)
