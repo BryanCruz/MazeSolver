@@ -19,3 +19,6 @@ getSnd (Edge (a, b)) = b
 
 getAdjacent :: Eq a => Graph a -> Node a -> [Node a]
 getAdjacent (Graph vs) u = concat [map getSnd es | (n, es) <- vs, n == u]
+
+getNodes :: Graph a -> [Node a]
+getNodes (Graph ns) = map fst ns
