@@ -14,7 +14,7 @@ originalPath :: String -> FilePath
 originalPath name = "resources/mazes/" ++ name ++ ".png"
 
 outPath :: String -> FilePath
-outPath name = "output/mazes/" ++ name ++ "_out.png"
+outPath name = "output/mazes/" ++ name ++ ".png"
 
 coords2Graph :: [(Int, Int)] -> Graph (Int, Int)
 coords2Graph ns = Graph [(Node (a, b), [Edge (Node (a, b), Node (c, d)) | (c, d) <- ns, manhattan (a, b) (c, d) == 1]) | (a, b) <- ns]
@@ -45,7 +45,7 @@ main = do
   print "BFS Time: %0.3f sec\n" (diff :: Double)
 
   let bfsSolution = drawPath mazeMatrix bfsPath
-  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix bfsSolution))
+  savePngImage (outPath (mazeName ++ "_bfs")) (ImageRGB8 (getImageFromMatrix bfsSolution))
   print "========="
 
   print "== DFS == "
@@ -57,14 +57,11 @@ main = do
   print "DFS Time: %0.3f sec\n" (diff :: Double)
   
   let dfsSolution = drawPath mazeMatrix dfsPath
-  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix dfsSolution))
+  savePngImage (outPath (mazeName ++ "_dfs")) (ImageRGB8 (getImageFromMatrix dfsSolution))
   print "======== "
 
   print "== A* == "
   -- let aStarPath = aStar graph (head $ getNodes graph) (last $ getNodes graph)
   -- let dfsSolution = drawPath mazeMatrix aStarPath
-  -- savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix dfsSolution))
+  -- savePngImage (outPath (mazeName ++ "_Astar")) (ImageRGB8 (getImageFromMatrix dfsSolution))
   print "======= "
-
-  -- -- Save Image is an IO action
-  -- savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))
