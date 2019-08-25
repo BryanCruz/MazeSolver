@@ -38,7 +38,7 @@ bfs g u v = buildPath (bfs' g (u,u) v [] []) v
           | otherwise = bfs' g (head queue') v ((u,predU):visited) (tail queue')
               where 
                 nodesVisited  = [fst x | x <- visited]
-                
+                queue'        = queue ++ neighbors
                 neighbors     = [(x, predX) | x <- getAdjacent g u,x `notElem` nodesVisited]
                 predX         = u
 
@@ -54,4 +54,6 @@ bfs g u v = buildPath (bfs' g (u,u) v [] []) v
           | uncurry (==) n = [fst n]
           | fst n == pred  = buildPath ns (snd n)++[pred]
           | otherwise      = buildPath ns pred
+
+        getVisited ns = reverse [fst n | n <- ns]
 

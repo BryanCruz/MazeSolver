@@ -40,35 +40,27 @@ main = do
   let mazeMatrix = getMatrixFromImage mazeImage
   let graph = matrixToGraph mazeMatrix
 
-  print "== BFS =="
+  -- runAlg dfs "DFS" mazeName graph mazeMatrix
+  -- runAlg bfs "BFS" mazeName graph mazeMatrix
+  runAlg aStar "ASTAR" mazeName graph mazeMatrix
 
-  start <- getCPUTime
-  let bfsPath = bfs graph (head $ getNodes graph) (last $ getNodes graph)
-  end  <- bfsPath `deepseq` getCPUTime
-  let diff = fromIntegral (end - start) / (10^12)
-  printf "BFS Time: %0.3f sec\n" (diff :: Double)
+  return ()
 
-  let bfsSolution = drawPath mazeMatrix bfsPath
-  savePngImage (outPath (mazeName ++ "_bfs")) (ImageRGB8 (getImageFromMatrix bfsSolution))
-  print "========="
+runAlg alg name mazeName graph mazeMatrix = do
+  let origin = head $ getNodes graph
+  let target = last $ getNodes graph
 
-  print "== DFS =="
-
-  start <- getCPUTime
-  let dfsPath = dfs graph (head $ getNodes graph) (last $ getNodes graph)
-  end  <- dfsPath `deepseq` getCPUTime
-  let diff = fromIntegral (end - start) / (10^12)
-  printf "DFS Time: %0.3f sec\n" (diff :: Double)
+  putStrLn $ "== " ++ name ++ " =="
   
-  let dfsSolution = drawPath mazeMatrix dfsPath
-  savePngImage (outPath (mazeName ++ "_dfs")) (ImageRGB8 (getImageFromMatrix dfsSolution))
-  print "========"
+  start <- getCPUTime
+  let path = alg graph origin target
+  end <- path `deepseq` getCPUTime
 
-  print "== A* =="
-  -- let aStarPath = aS ath (mazeName ++ "_AStar")) (ImageRGB8 (getImageFromMatrix dfsSolution))
-  print "========"
+  let diff = fromIntegral (end - start) / (10^12)
+  printf (name ++ " Time: %0.6f sec\n") (diff :: Double)
 
-  -- print ">>>"
-  -- print $ graphToMatrix $ matrixToGraph [[0]]
-  -- print $ graphToMatrix $ matrixToGraph [[]]
-  -- print $ graphToMatrix (Graph [])
+  let solutionMatrix = drawPath mazeMatrix path
+  savePngImage (outPath (mazeName ++ "_" ++ name)) (ImageRGB8 (getImageFromMatrix solutionMatrix))
+
+  putStrLn "========"
+  return ()
