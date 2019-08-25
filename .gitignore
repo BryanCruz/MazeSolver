@@ -1,3 +1,4 @@
 textMazes
 .stack-work
-output
+labirinto/output/mazes/*
+labirinto/test/mazes/*

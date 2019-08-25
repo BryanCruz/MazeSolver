@@ -1,10 +1,13 @@
 module Main where
 
-import Graph
-import Parser
 import Codec.Picture
 import Codec.Picture.Types
 import System.Environment
+
+import Bfs
+import Graph
+import Parser
+import GraphConverter
 
 originalPath :: String -> FilePath
 originalPath name = "resources/mazes/" ++ name ++ ".png"
@@ -23,14 +26,20 @@ main = do
   -- Get maze name from command line
   args <- getArgs
 
-  let mazeName = if not $ null args then head args else "MAZE01"
+  let mazeName = if not $ null args then head args else "MAZE00"
 
   -- Read image is an IO action
   mazeImage <- readImage $ originalPath mazeName
 
   -- Parse image to a Maze Matrix
   let mazeMatrix = getMatrixFromImage mazeImage
+  let graph = matrixToGraph mazeMatrix
 
-  -- Save Image is an IO action
-  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))
+  let path = bfs graph (head $ getNodes graph) (last $ getNodes graph)
 
+  let matrixSolved = drawPath mazeMatrix path
+
+  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix matrixSolved))
+
+  -- -- Save Image is an IO action
+  -- savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))

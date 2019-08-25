@@ -21,5 +21,20 @@ matrixToGraph xss = graphInit $ concat [[(i, j) | (j, y) <- xs, y == 0] | (i, xs
 
 graphInit :: [(Int, Int)] -> Graph (Int, Int)
 graphInit xs = Graph [(Node x, [Edge (Node x, Node y) | y <- xs, manhattan x y == 1]) | x <- xs]
-    where
-      manhattan (a, b) (c, d) = abs (a - c) + abs (b - d)
+  where
+    manhattan (a, b) (c, d) = abs (a - c) + abs (b - d)
+
+drawPath :: [[Int]] -> [Node (Int, Int)] -> [[Int]]
+drawPath m ns = m'
+  where
+    indexedPath :: [(Int, Node (Int, Int))]
+    indexedPath = zip [1..] ns
+
+    m' :: [[Int]]
+    m' = foldr insertNode m indexedPath
+
+    insertNode :: (Int, Node (Int, Int)) -> [[Int]] -> [[Int]]
+    insertNode (i, Node (x, y)) m = take x m ++ [changeLine (m !! x) y i] ++ drop (x+1) m
+
+    changeLine :: [Int] -> Int -> Int -> [Int]
+    changeLine l y v = take y l ++ [v] ++ drop (y+1) l
