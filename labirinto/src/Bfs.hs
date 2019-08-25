@@ -2,13 +2,15 @@ module Bfs where
 
 import Graph
 
+import Debug.Trace
+
 {-|
   Bfs function returns the shortest path between two nodes in a graph
   First argument is a graph of type 'Graph'
   Second argument is the start node of type 'Node'
   Third argument is the target node of type 'Node'
   -}
-bfs :: Eq a => Graph a -> Node a -> Node a -> [Node a]
+bfs :: (Show a, Eq a) => Graph a -> Node a -> Node a -> [Node a]
 bfs g u v = buildPath (bfs' g (u,u) v [] []) v
       where
         {-|
@@ -21,7 +23,7 @@ bfs g u v = buildPath (bfs' g (u,u) v [] []) v
           Fourth argument is a list of visited nodes with its predecessor, of type '(Node, Node)'
           Fifth argument is the queue of tuples of nodes and predecessors, of type '(Node, Node)'
         -}
-        bfs' :: Eq a => Graph a -> (Node a, Node a) -> Node a -> [(Node a, Node a)] -> [(Node a, Node a)] -> [(Node a, Node a)]
+        bfs' :: (Show a, Eq a) => Graph a -> (Node a, Node a) -> Node a -> [(Node a, Node a)] -> [(Node a, Node a)] -> [(Node a, Node a)]
         bfs' g (u, predU) v visited queue
           -- Checks if the node we're looking is the node we're looking for
           | u == v = (u,predU):visited
@@ -33,7 +35,7 @@ bfs g u v = buildPath (bfs' g (u,u) v [] []) v
           | u `elem` nodesVisited =  bfs' g (head queue) v visited queue'
           
           -- Calls bfs' passing next element in queue and adding the neighbors of u to queue
-          | otherwise = bfs' g (head queue') v ((u,predU):visited) (tail queue')
+          | otherwise = trace (show visited) $ bfs' g (head queue') v ((u,predU):visited) (tail queue')
               where 
                 nodesVisited  = [fst x | x <- visited]
                 queue'        = queue ++ neighbors

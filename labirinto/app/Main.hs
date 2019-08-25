@@ -26,7 +26,7 @@ main = do
   -- Get maze name from command line
   args <- getArgs
 
-  let mazeName = if not $ null args then head args else "MAZE01"
+  let mazeName = if not $ null args then head args else "MAZE00"
 
   -- Read image is an IO action
   mazeImage <- readImage $ originalPath mazeName
@@ -35,8 +35,11 @@ main = do
   let mazeMatrix = getMatrixFromImage mazeImage
   let graph = matrixToGraph mazeMatrix
 
-  print ">>>"
-  print $ bfs graph (head $ getNodes graph) (last $ getNodes graph)
+  let path = bfs graph (head $ getNodes graph) (last $ getNodes graph)
 
-  -- Save Image is an IO action
+  let matrixSolved = drawPath mazeMatrix path
+
+  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix matrixSolved))
+
+  -- -- Save Image is an IO action
   -- savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))
