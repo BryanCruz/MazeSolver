@@ -4,11 +4,16 @@ import Test.QuickCheck
 import Codec.Picture
 import Codec.Picture.Types
 
+import Data.List
+import Debug.Trace
 import Control.Monad
+import Control.Applicative
 
 import Bfs
+import Dfs
 import Graph
 import qualified Parser
+import qualified GraphConverter as GC
 
 originalPath name = "resources/mazes/" ++ name ++ ".png"
 outPath name = "test/mazes/" ++ name ++ "_out.png"
@@ -30,7 +35,7 @@ instance Arbitrary a => Arbitrary (Edge a) where
 
 instance (Eq a, Arbitrary a) => Arbitrary (Graph a) where
   arbitrary = do
-    nodeList <- listOf arbitrary
+    nodeList <- nub <$> listOf arbitrary
     edgeLists <- mapM (genEdgeList nodeList) nodeList
 
     return $ Graph (zip nodeList edgeLists)
@@ -45,6 +50,8 @@ instance (Eq a, Arbitrary a) => Arbitrary (Graph a) where
 main :: IO ()
 main = hspec $ do
   describe "Parser" $ do
+    -- As images do not derive Show, we can't compare'em with `should be`, which is kind of a flaw in this tests
+    -- As an attempt to workaround this issue, we are testing matrixes parsed from images
     it "Images read from same path are converted to the same matrix" $ do
       let mazeName = "MAZE01"
       img11 <- readImage $ originalPath mazeName
@@ -87,13 +94,20 @@ main = hspec $ do
       img2 <- readImage $ outPath mazeName
       let matrixTwice = Parser.getMatrixFromImage img2
       matrixOnce `shouldBe` matrixTwice
+  
+  -- describe "Graph Converter" $ do
+    -- it "Test Conversion" $ property testGraphMatrixConversion
+    -- it "Dummy test" $ 1 `shouldBe` 1
     
   describe "Graph" $ do
     it "Test getFst" $ property testFst
     it "Test getSnd" $ property testSnd
-    it "Test adjacent" $ property $ testNodesPresent bfs
-    it "Test adjacent" $ property $ testEdgesPresent bfs
+    it "Test Nodes Present" $ property $ testNodesPresent dfs
+    it "Test Edges Present" $ property $ testEdgesPresent dfs
 
+
+testGraphMatrixConversion :: [[Int]] -> Bool
+testGraphMatrixConversion m = m == (GC.graphToMatrix . GC.matrixToGraph) m
 
 testFst :: Edge (Node Int, Node Int) -> Bool
 testFst e@(Edge (a, b)) = getFst e == a
@@ -110,7 +124,6 @@ testNodesPresent alg g = all (`elem` graphNodes) pathNodes
                  then alg g (head graphNodes) (last graphNodes)
                  else []
 
--- Graph a -> Node a -> Node a -> [Node a]
 -- Test if all edges returned from solvers are present in the original graph
 testEdgesPresent :: (Graph Int -> Node Int -> Node Int -> [Node Int]) -> Graph Int -> Bool
 testEdgesPresent alg g = all (`elem` graphEdges) pathEdges
@@ -118,10 +131,15 @@ testEdgesPresent alg g = all (`elem` graphEdges) pathEdges
     graphEdges = getEdges g
     graphNodes = getNodes g
 
-    pathNodes  = alg g (head graphNodes) (last graphNodes)
-    pathEdges  = if not $ null graphEdges
-                 then nodesToEdges pathNodes
-                 else []
+    x = alg g (head graphNodes) (last graphNodes)
 
+    -- pathNodes = trace (show x) x
+    pathEdges = if not $ null graphEdges
+                then nodesToEdges pathNodes
+                else []
+
+-- Parse list of nodes to list of edges that connects'em
 nodesToEdges :: [Node a] -> [Edge a]
-nodesToEdges ns = zipWith (curry Edge) ns (tail ns)
+nodesToEdges ns = if not $ null e then init e else []
+  where
+    e = zipWith (curry Edge) ns (tail ns)
