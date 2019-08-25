@@ -1,0 +1,119 @@
+labirinto> build (internal-lib + exe)
+Preprocessing library 'MazeSolver' for labirinto-0.1.0.0..
+Building library 'MazeSolver' for labirinto-0.1.0.0..
+[6 of 6] Compiling AStar
+
+/home/daniel/Área de Trabalho/proposta-de-projeto-diurno-time-7/labirinto/src/AStar.hs:22:9: error:
+    • Ambiguous type variable ‘t1’ arising from a use of ‘null’
+      prevents the constraint ‘(Foldable t1)’ from being solved.
+      Probable fix: use a type annotation to specify what ‘t1’ should be.
+      These potential instances exist:
+        instance Foldable (Either a) -- Defined in ‘Data.Foldable’
+        instance Foldable Maybe -- Defined in ‘Data.Foldable’
+        instance Foldable ((,) a) -- Defined in ‘Data.Foldable’
+        ...plus one other
+        ...plus 27 instances involving out-of-scope types
+        (use -fprint-potential-instances to see them all)
+    • In the expression: null recursion
+      In a stmt of a pattern guard for
+                     an equation for ‘solution’:
+        null recursion
+      In an equation for ‘solution’:
+          solution
+            | end `elem` map snd q' = [st, end]
+            | null recursion = []
+            | otherwise = st : recursion
+   |
+22 |       | null recursion = []
+   |         ^^^^^^^^^^^^^^
+
+/home/daniel/Área de Trabalho/proposta-de-projeto-diurno-time-7/labirinto/src/AStar.hs:25:32: error:
+    • Couldn't match expected type ‘a -> Bool’ with actual type ‘Bool’
+    • Possible cause: ‘not’ is applied to too many arguments
+      In the first argument of ‘filter’, namely ‘(not null)’
+      In the expression: filter (not null)
+      In the second argument of ‘($)’, namely
+        ‘filter (not null) $ map (\ (c, n) -> aStar' g q' c n end) q'’
+    • Relevant bindings include
+        recursion :: a (bound at src/AStar.hs:25:5)
+   |
+25 |     recursion = head $ filter (not null) $ map (\(c, n) -> aStar' g q' c n end) q'
+   |                                ^^^^^^^^
+
+/home/daniel/Área de Trabalho/proposta-de-projeto-diurno-time-7/labirinto/src/AStar.hs:25:36: error:
+    • Couldn't match expected type ‘Bool’
+                  with actual type ‘t0 a0 -> Bool’
+    • Probable cause: ‘null’ is applied to too few arguments
+      In the first argument of ‘not’, namely ‘null’
+      In the first argument of ‘filter’, namely ‘(not null)’
+      In the expression: filter (not null)
+   |
+25 |     recursion = head $ filter (not null) $ map (\(c, n) -> aStar' g q' c n end) q'
+   |                                    ^^^^
+
+/home/daniel/Área de Trabalho/proposta-de-projeto-diurno-time-7/labirinto/src/AStar.hs:25:60: error:
+    • Couldn't match expected type ‘Node (Int, Int) -> a’
+                  with actual type ‘[Node (Int, Int)]’
+    • The function ‘aStar'’ is applied to five arguments,
+      but its type ‘Graph (Int, Int)
+                    -> Int -> Node (Int, Int) -> Node (Int, Int) -> [Node (Int, Int)]’
+      has only four
+      In the expression: aStar' g q' c n end
+      In the first argument of ‘map’, namely
+        ‘(\ (c, n) -> aStar' g q' c n end)’
+    • Relevant bindings include
+        recursion :: a (bound at src/AStar.hs:25:5)
+   |
+25 |     recursion = head $ filter (not null) $ map (\(c, n) -> aStar' g q' c n end) q'
+   |                                                            ^^^^^^^^^^^^^^^^^^^
+
+/home/daniel/Área de Trabalho/proposta-de-projeto-diurno-time-7/labirinto/src/AStar.hs:25:69: error:
+    • Couldn't match expected type ‘Int’
+                  with actual type ‘[(Int, Node (Int, Int))]’
+    • In the second argument of ‘aStar'’, namely ‘q'’
+      In the expression: aStar' g q' c n end
+      In the first argument of ‘map’, namely
+        ‘(\ (c, n) -> aStar' g q' c n end)’
+   |
+25 |     recursion = head $ filter (not null) $ map (\(c, n) -> aStar' g q' c n end) q'
+   |                                                                     ^^
+
+/home/daniel/Área de Trabalho/proposta-de-projeto-diurno-time-7/labirinto/src/AStar.hs:25:81: error:
+    • Couldn't match type ‘Int’ with ‘Node (Int, Int)’
+      Expected type: [(Node (Int, Int), Node (Int, Int))]
+        Actual type: [(Int, Node (Int, Int))]
+    • In the second argument of ‘map’, namely ‘q'’
+      In the second argument of ‘($)’, namely
+        ‘map (\ (c, n) -> aStar' g q' c n end) q'’
+      In the second argument of ‘($)’, namely
+        ‘filter (not null) $ map (\ (c, n) -> aStar' g q' c n end) q'’
+   |
+25 |     recursion = head $ filter (not null) $ map (\(c, n) -> aStar' g q' c n end) q'
+   |                                                                                 ^^
+
+/home/daniel/Área de Trabalho/proposta-de-projeto-diurno-time-7/labirinto/src/AStar.hs:26:10: error:
+    • No instance for (Ord (Node (Int, Int)))
+        arising from a use of ‘sort’
+    • In the expression: sort qCandidatesEvaluated
+      In an equation for ‘q'’: q' = sort qCandidatesEvaluated
+      In an equation for ‘aStar'’:
+          aStar' g currentCost st end
+            = solution
+            where
+                solution
+                  | end `elem` map snd q' = [st, ....]
+                  | null recursion = []
+                  | otherwise = st : recursion
+                recursion
+                  = head
+                      $ filter (not null) $ map (\ (c, n) -> aStar' g q' c n end) q'
+                q' = sort qCandidatesEvaluated
+                f = (+ currentCost) . manhattan end
+                ....
+   |
+26 |     q' = sort qCandidatesEvaluated
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+--  While building package labirinto-0.1.0.0 using:
+      /home/daniel/.stack/setup-exe-cache/x86_64-linux/Cabal-simple_mPHDZzAJ_2.4.0.1_ghc-8.6.5 --builddir=.stack-work/dist/x86_64-linux/Cabal-2.4.0.1 build lib:MazeSolver exe:labirinto --ghc-options ""
+    Process exited with code: ExitFailure 1

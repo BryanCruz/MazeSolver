@@ -1,10 +1,13 @@
 module GraphConverter where
 
 import Graph
-
+  
 graphToMatrix :: Graph (Int, Int) -> [[Int]]
-graphToMatrix g = [[if (x, y) `elem` nodePos then 0 else -1 | y <- [minY..maxY]] | x <- [minX..maxX]]
+graphToMatrix g = if isEmpty
+                  then [[]]
+                  else [[if (x, y) `elem` nodePos then 0 else -1 | y <- [minY..maxY]] | x <- [minX..maxX]]
   where
+    isEmpty = null nodes
     nodes = getNodes g
     nodePos = [t | (Node t) <- nodes]
     (minX, maxX, minY, maxY) = getBounds nodePos (1000000000, 0, 1000000000, 0)

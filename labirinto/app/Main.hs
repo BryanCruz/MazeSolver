@@ -2,12 +2,14 @@ module Main where
 
 import Codec.Picture
 import Codec.Picture.Types
+import Control.DeepSeq
 import System.Environment
 import System.CPUTime
 import Text.Printf
 
 import Bfs
 import Dfs
+import AStar
 import Graph
 import Parser
 import GraphConverter
@@ -42,7 +44,7 @@ main = do
 
   start <- getCPUTime
   let bfsPath = bfs graph (head $ getNodes graph) (last $ getNodes graph)
-  end  <- getCPUTime
+  end  <- bfsPath `deepseq` getCPUTime
   let diff = fromIntegral (end - start) / (10^12)
   printf "BFS Time: %0.3f sec\n" (diff :: Double)
 
@@ -50,20 +52,23 @@ main = do
   savePngImage (outPath (mazeName ++ "_bfs")) (ImageRGB8 (getImageFromMatrix bfsSolution))
   print "========="
 
-  print "== DFS == "
+  print "== DFS =="
 
   start <- getCPUTime
   let dfsPath = dfs graph (head $ getNodes graph) (last $ getNodes graph)
-  end  <- getCPUTime
+  end  <- dfsPath `deepseq` getCPUTime
   let diff = fromIntegral (end - start) / (10^12)
   printf "DFS Time: %0.3f sec\n" (diff :: Double)
   
   let dfsSolution = drawPath mazeMatrix dfsPath
   savePngImage (outPath (mazeName ++ "_dfs")) (ImageRGB8 (getImageFromMatrix dfsSolution))
-  print "======== "
+  print "========"
 
-  print "== A* == "
-  -- let aStarPath = aStar graph (head $ getNodes graph) (last $ getNodes graph)
-  -- let dfsSolution = drawPath mazeMatrix aStarPath
-  -- savePngImage (outPath (mazeName ++ "_Astar")) (ImageRGB8 (getImageFromMatrix dfsSolution))
-  print "======= "
+  print "== A* =="
+  -- let aStarPath = aS ath (mazeName ++ "_AStar")) (ImageRGB8 (getImageFromMatrix dfsSolution))
+  print "========"
+
+  -- print ">>>"
+  -- print $ graphToMatrix $ matrixToGraph [[0]]
+  -- print $ graphToMatrix $ matrixToGraph [[]]
+  -- print $ graphToMatrix (Graph [])

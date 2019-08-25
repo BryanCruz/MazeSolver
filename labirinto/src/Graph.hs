@@ -1,8 +1,14 @@
+{-# LANGUAGE DeriveGeneric #-}
 module Graph where
 
-newtype Node n = Node n deriving (Eq)
+import GHC.Generics (Generic)
+import Control.DeepSeq
+
+newtype Node n = Node n deriving (Eq, Generic)
 newtype Edge n = Edge (Node n, Node n) deriving (Show, Eq)
 newtype Graph n = Graph [(Node n, [Edge n])]
+
+instance NFData a => NFData (Node a)
 
 instance Show a => Show (Node a) where
   show (Node x) = show x
