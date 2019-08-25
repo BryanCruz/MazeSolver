@@ -95,19 +95,41 @@ main = hspec $ do
       let matrixTwice = Parser.getMatrixFromImage img2
       matrixOnce `shouldBe` matrixTwice
   
-  -- describe "Graph Converter" $ do
-    -- it "Test Conversion" $ property testGraphMatrixConversion
-    -- it "Dummy test" $ 1 `shouldBe` 1
-    
+  describe "DrawPath" $
+    it "Matrix with path should have the same shape as original matrix" $ do
+      (l10, l20) <- getLengthsOfPath "MAZE00"
+      l10 `shouldBe` l20
+
+      (l11, l21) <- getLengthsOfPath "MAZE01"
+      l11 `shouldBe` l21
+
+      (l12, l22) <- getLengthsOfPath "MAZE02"
+      l12 `shouldBe` l22
+
+      (l13, l23) <- getLengthsOfPath "MAZE03"
+      l13 `shouldBe` l23
+
+      (l14, l24) <- getLengthsOfPath "MAZE04"
+      l14 `shouldBe` l24
+
+      (l15, l25) <- getLengthsOfPath "MAZE05"
+      l15 `shouldBe` l25
+  
   describe "Graph" $ do
     it "Test getFst" $ property testFst
     it "Test getSnd" $ property testSnd
     it "Test Nodes Present" $ property $ testNodesPresent dfs
     it "Test Edges Present" $ property $ testEdgesPresent dfs
 
+getLengthsOfPath mazeName = do
+  img1 <- readImage $ originalPath mazeName
+  let matrix = Parser.getMatrixFromImage img1
 
-testGraphMatrixConversion :: [[Int]] -> Bool
-testGraphMatrixConversion m = m == (GC.graphToMatrix . GC.matrixToGraph) m
+  let g = GC.matrixToGraph matrix
+  let nodes = getNodes g
+  let p = dfs g (head nodes) (last nodes)
+  let drawn = GC.drawPath matrix p
+  return ((length matrix, length $ head matrix), (length drawn, length $ head drawn))
 
 testFst :: Edge (Node Int, Node Int) -> Bool
 testFst e@(Edge (a, b)) = getFst e == a
@@ -131,9 +153,7 @@ testEdgesPresent alg g = all (`elem` graphEdges) pathEdges
     graphEdges = getEdges g
     graphNodes = getNodes g
 
-    x = alg g (head graphNodes) (last graphNodes)
-
-    -- pathNodes = trace (show x) x
+    pathNodes = alg g (head graphNodes) (last graphNodes)
     pathEdges = if not $ null graphEdges
                 then nodesToEdges pathNodes
                 else []
