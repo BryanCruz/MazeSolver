@@ -1,11 +1,16 @@
 module Dfs where
 
+import qualified Data.Map.Strict as Map
+
 import Graph
 
-dfs :: Eq a => Graph a -> Node a -> Node a -> [Node a]
-dfs g st end = dfs' g st end st
+dfs :: (Ord a, Eq a) => Graph a -> Node a -> Node a -> [Node a]
+dfs g st end = dfs' g' st end st
   where
-    dfs' g st end par | st /= end = if null recursion then [] else st : concat recursion
+    g' = foldr (\n m -> insert n True m) empty g
+
+    dfs' g st end par | st /= end = if null recursion g' then [] else st : concat recursion
                       | otherwise = [st]
-      where 
-        recursion = dropWhile null $ map (\v -> dfs' g v end st) $ filter (/= par) $ getAdjacent g st
+
+    recursion g' = dropWhile null $ map (\v -> dfs' g v end st) $ filter (\n -> g' ! n) $ getAdjacent g st
+        

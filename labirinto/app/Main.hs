@@ -5,6 +5,7 @@ import Codec.Picture.Types
 import System.Environment
 
 import Bfs
+import Dfs
 import Graph
 import Parser
 import GraphConverter
@@ -31,15 +32,39 @@ main = do
   -- Read image is an IO action
   mazeImage <- readImage $ originalPath mazeName
 
-  -- Parse image to a Maze Matrix
+  -- Parse image to a Maze Matrix and to a graph
   let mazeMatrix = getMatrixFromImage mazeImage
   let graph = matrixToGraph mazeMatrix
 
-  let path = bfs graph (head $ getNodes graph) (last $ getNodes graph)
+  print "== BFS =="
 
-  let matrixSolved = drawPath mazeMatrix path
+  start <- getCPUTime
+  let bfsPath = bfs graph (head $ getNodes graph) (last $ getNodes graph)
+  end  <- getCPUTime
+  let diff = fromIntegral (end - start) / (10^12)
+  print "BFS Time: %0.3f sec\n" (diff :: Double)
 
-  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix matrixSolved))
+  let bfsSolution = drawPath mazeMatrix bfsPath
+  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix bfsSolution))
+  print "========="
+
+  print "== DFS == "
+
+  start <- getCPUTime
+  let dfsPath = dfs graph (head $ getNodes graph) (last $ getNodes graph)
+  end  <- getCPUTime
+  let diff = fromIntegral (end - start) / (10^12)
+  print "DFS Time: %0.3f sec\n" (diff :: Double)
+  
+  let dfsSolution = drawPath mazeMatrix dfsPath
+  savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix dfsSolution))
+  print "======== "
+
+  print "== A* == "
+  -- let aStarPath = aStar graph (head $ getNodes graph) (last $ getNodes graph)
+  -- let dfsSolution = drawPath mazeMatrix aStarPath
+  -- savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix dfsSolution))
+  print "======= "
 
   -- -- Save Image is an IO action
   -- savePngImage (outPath mazeName) (ImageRGB8 (getImageFromMatrix mazeMatrix))

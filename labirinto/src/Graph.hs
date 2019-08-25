@@ -4,6 +4,16 @@ newtype Node n = Node n deriving (Eq)
 newtype Edge n = Edge (Node n, Node n) deriving (Show, Eq)
 newtype Graph n = Graph [(Node n, [Edge n])]
 
+-- instance Foldable Tree where
+--   foldr f z Empty = z
+--   foldr f z (Leaf x) = f x z
+--   foldr f z (Node l k r) = foldr f (f k (foldr f z r)) l
+
+instance Foldable Graph where 
+  -- foldr :: (a -> b -> b) -> b -> t a -> b 
+  foldr f b (Graph []) = b
+  foldr f b (Graph ((Node n, es):ns)) = foldr f (foldr (\(Edge (Node x, Node y)) -> f x (f y b)) n es) (Graph ns)
+
 instance Show a => Show (Node a) where
   show (Node x) = show x
 
