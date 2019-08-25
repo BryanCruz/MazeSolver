@@ -40,7 +40,7 @@ Assim, a estrutura do projeto deve se econtrar na forma:
 
 A maior dificuldade enfrentada foi a integração de todos os módulos. Módulos desenvolvidos independentemente tiveram alguma dificuldade para serem integrados, o que resultou falhas nos testes de integração desenvolvidos.
 
-Outra dificuldade foi implementar os algoritmos de busca em grafo, pois não estamos acostumados a escrever algoritmos desse tipo em linguagens funcionais, portanto levamos bastante t
+Outra dificuldade foi implementar os algoritmos de busca em grafo, pois não estamos acostumados a escrever algoritmos desse tipo em linguagens funcionais, portanto levamos bastante tempo para implementa-los e corrigir os bugs gerados.
 
 Além disso, houve também um erro de planejamento que, somado à semana de provas e de entregas de outros trabalhos, resultou na necessidade de grandes esforços no fim de semana da entrega.
 
