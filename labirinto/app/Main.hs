@@ -3,6 +3,8 @@ module Main where
 import Codec.Picture
 import Codec.Picture.Types
 import System.Environment
+import System.CPUTime
+import Text.Printf
 
 import Bfs
 import Dfs
@@ -42,7 +44,7 @@ main = do
   let bfsPath = bfs graph (head $ getNodes graph) (last $ getNodes graph)
   end  <- getCPUTime
   let diff = fromIntegral (end - start) / (10^12)
-  print "BFS Time: %0.3f sec\n" (diff :: Double)
+  printf "BFS Time: %0.3f sec\n" (diff :: Double)
 
   let bfsSolution = drawPath mazeMatrix bfsPath
   savePngImage (outPath (mazeName ++ "_bfs")) (ImageRGB8 (getImageFromMatrix bfsSolution))
@@ -54,7 +56,7 @@ main = do
   let dfsPath = dfs graph (head $ getNodes graph) (last $ getNodes graph)
   end  <- getCPUTime
   let diff = fromIntegral (end - start) / (10^12)
-  print "DFS Time: %0.3f sec\n" (diff :: Double)
+  printf "DFS Time: %0.3f sec\n" (diff :: Double)
   
   let dfsSolution = drawPath mazeMatrix dfsPath
   savePngImage (outPath (mazeName ++ "_dfs")) (ImageRGB8 (getImageFromMatrix dfsSolution))
