@@ -37,7 +37,7 @@ bfs g u v = buildPath (bfs' g (u,u) v [] []) v
               where 
                 nodesVisited  = [fst x | x <- visited]
                 queue'        = queue ++ neighbors
-                neighbors     = [(x, predX) | x <- (getAdjacent g u)]
+                neighbors     = [(x, predX) | x <- (getAdjacent g u), not (x elem nodesVisited)]
                 predX         = u
 
         {-|
