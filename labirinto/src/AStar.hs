@@ -3,7 +3,6 @@ module AStar(aStar) where
 import Graph
 import Data.List
 
-import Debug.Trace
 import Data.Foldable (toList)
 
 manhattan :: Node (Int, Int) -> Node (Int, Int) -> Int
@@ -13,8 +12,7 @@ manhattan (Node (x1, y1)) (Node (x2, y2)) = abs (x1 - x2) + abs (y1 - y2)
 aStar :: Graph (Int, Int) -> Node (Int, Int) -> Node (Int, Int) -> [Node (Int, Int)]
 aStar g st end = reverse $ aStar' [] [(0, st)] 0 g end
 
---     :: Graph            -> cost ->   Initial node  -> End node        -> Path
---aStar' :: Graph (Int, Int) ->  Int -> Node (Int, Int) -> Node (Int, Int) -> [Node (Int, Int)]
+
 aStar' visited queue currentCost g end
   | st == end   = visited'
   | null queue' = []
@@ -33,5 +31,6 @@ aStar' visited queue currentCost g end
         where
           getMinor ((v, n), (v', _)) = (min v v', n)
 
-      f n = currentCost' + manhattan n end
+      heuristicsMultiplier = 1000
+      f n = currentCost' + 1000 * manhattan n end
       currentCost' = currentCost + 1
