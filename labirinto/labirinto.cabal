@@ -12,7 +12,7 @@ category:            Web
 build-type:          Simple
 cabal-version:       >=1.10
 
-library 
+library MazeSolver
   hs-source-dirs:     src
   default-language:   Haskell2010
   build-depends:      base >= 4.7 && < 5, JuicyPixels, containers, deepseq, random
@@ -22,7 +22,7 @@ executable labirinto
   hs-source-dirs:     app
   main-is:            Main.hs
   default-language:   Haskell2010
-  build-depends:      base >= 4.7 && < 5, JuicyPixels, labirinto, deepseq, random
+  build-depends:      base >= 4.7 && < 5, JuicyPixels, deepseq, random, MazeSolver
 
 test-suite spec
   Type:               exitcode-stdio-1.0
