@@ -4,9 +4,13 @@ module MazeGenerator(
 ) where
 
 import Graph
+import GraphConverter
 import Data.Maybe
+import qualified Data.List  as List
 import System.Random
 import qualified Data.Map as Map
+
+import Debug.Trace
 
 data Size = XS | S | M | L | XL deriving (Enum, Show, Eq, Read)
 type UnionFind a = Map.Map a (Int, a)
@@ -35,13 +39,13 @@ sizeToPxs sz = sizes !! fromEnum sz
     sizes = [11, 25, 45, 75, 91]
 
 resizeGraph :: Graph (Int, Int) -> Graph (Int, Int)
-resizeGraph (Graph ns) = Graph (newNs ++ middleNodes)
-  where
-    newNs                                  = [(newNode n, map middleNode es) | (n, es) <- ns]
-    newNode (Node (x, y))                  = Node (2 * x, 2 * y)
-    middleNode (Edge (n1, n2))             = Edge (newNode n1, average (newNode n1, newNode n2))
-    middleNodes                            = []
-    average (Node (x1, y1), Node (x2, y2)) = Node ((x1 + x2) `div` 2, (y1 + y2) `div` 2)
+resizeGraph (Graph ns) = graphInit $ (0, 1) : (x, x + 1) : nodeList
+   where
+    x = maximum $ map snd nodeList
+    nodeList = List.nub (averages ++ (map (double . getId)  (getNodes (Graph ns))))
+    averages = concat [map average es | (n, es) <- ns]
+    average (Edge (Node (x1, y1), Node (x2, y2))) = (x1 + x2 + 1, y1 + y2 + 1)
+    double (x, y) = (2 * x + 1, 2 * y + 1)
 
 newSquareGraph :: Int -> Graph (Int, Int)
 newSquareGraph n = Graph [(Node (x, y), []) | x <- [0..(n - 1)], y <- [0..(n - 1)]]
@@ -49,10 +53,10 @@ newSquareGraph n = Graph [(Node (x, y), []) | x <- [0..(n - 1)], y <- [0..(n - 1
 directions :: [(Int, Int) -> (Int, Int)]
 directions = [up, dwn, lft, rgt]
   where
-    up = \(x,y) -> (x, y-1)
+    up  = \(x,y) -> (x, y-1)
     dwn = \(x,y) -> (x, y+1)
-    lft = \(x,y) -> (x-1, y-1)
-    rgt = \(x,y) -> (x+1, y-1)
+    lft = \(x,y) -> (x-1, y)
+    rgt = \(x,y) -> (x+1, y)
 
 shuffle :: [a] -> StdGen -> [a] 
 shuffle xs rd = shuffle' xs (length xs) rd  
@@ -66,20 +70,20 @@ shuffle xs rd = shuffle' xs (length xs) rd
         (pos, rd') = randomR (0, n - 1) rd
 
 generateMaze :: Size -> StdGen -> Graph (Int, Int)
-generateMaze sz rd = resizeGraph $ generateMaze' g (newUnionFind g) (n * n) possibleEdges
+generateMaze sz rd = resizeGraph newG
   where
+    newG = generateMaze' g (newUnionFind g) (n * n) possibleEdges
     n = sizeToPxs sz `div` 2
     g = newSquareGraph n
 
     possibleEdges :: [Edge (Int, Int)]
     possibleEdges = shuffle (getPossibleEdges n) rd
 
-    generateMaze' :: Graph (Int, Int) -> UnionFind (Int, Int) -> Int -> [Edge (Int, Int)] -> Graph (Int, Int)
-    generateMaze' g _  n []                         = g
+    generateMaze' g _  1 _                          = g
     generateMaze' g uf n (Edge (Node a, Node b):es) = g'
       where
-        g' | find uf a == find uf b = generateMaze' g uf n es
-           | otherwise              = generateMaze' g (union uf a b) (n - 1) es
+        g' | find uf a == find uf b = generateMaze' g uf n es 
+           | otherwise              = generateMaze' (addEdge g (Node a) (Node b)) (union uf a b) (n - 1) es
 
 getPossibleEdges :: Int -> [Edge (Int, Int)]
 getPossibleEdges n = concatMap (\(x,y) -> getEdges (x,y)) nodes

@@ -42,8 +42,8 @@ aStar' visited queue currentCost g end
       queueReevaluated    = zip (map f queueNodes) queueNodes
       queue'              = sortOn fst $ zipWith (curry getMinor) queueReevaluated queue ++ neighboursEvaluated
         where
-          getMinor ((v, (n, p)), (v', (_, p'))) = if (v <= v') then (v, (n, p)) else (v', (n, p'))
-
+          getMinor ((v, (n, p)), (v', (_, p'))) = if (v <= v') then (v, (n, p)) else (v', (n, p))
+          
       heuristicsMultiplier = 1000
       f (n, _) = currentCost' + 1000 * manhattan n end
       currentCost' = currentCost + 1

@@ -17,15 +17,17 @@ Além disso, o programa mostra o tempo de execução de cada algoritmo
 
 ## Execução
 
--   `stack run <mazeName>` roda o programa para os 3 algoritmos (BFS, DFS e A\*) no labirinto passado como parâmetro. Para isso, a imagem de nome `mazeName` deve existir na pasta `labirinto/resources/mazes` com o nome `mazeName.png`. As imagem de saída irão ser criadas na pasta `labirinto/output/mazes` (é importante garantir que a pasta existe antes da execução do programa). Nas imagens de saída teremos o caminho feito do início do labirinto até o final, em amarelo, e um mapa de calor dos nós que foram visitados na busca desse algoritmo, por ordem cronológica, com azul sendo os primeiros e vermelho sendo os últimos.
+-   `stack run <mazeName>` roda o programa para os 3 algoritmos (BFS, DFS e A\*) no labirinto passado como parâmetro. Para isso, a imagem de nome `mazeName` deve existir na pasta `labirinto/resources/mazes` com o nome `mazeName.png`. As imagens disponíveis são MAZE00 até a MAZE06. As imagem de saída irão ser criadas na pasta `labirinto/output/mazes` (é importante garantir que a pasta existe antes da execução do programa). Nas imagens de saída teremos o caminho feito do início do labirinto até o final, em amarelo, e um mapa de calor dos nós que foram visitados na busca desse algoritmo, por ordem cronológica, com azul sendo os primeiros e vermelho sendo os últimos.
 
--   `stack run generate <XS | S | M | L | XL>` roda o programa gerando um labirinto aleatorio com o tamanho especificado (XS é o menor possível, XL é o maior possível). Esse labirinto estará disponivel na pasta output com o nome `"randomMaze.png"`.
+    - Exemplo: `stack run MAZE05`
+
+-   `stack run generate <XS | S | M | L | XL>` roda o programa gerando um labirinto aleatorio com o tamanho especificado (XS é o menor possível, XL é o maior possível). O tamanho é opcional, e M é o padrão, caso nenhum outro seja especificdo. Esse labirinto estará disponivel na pasta output com o nome `"randomMaze.png"`. Os 3 algoritmos irão ser executados nesse labirinto (assim como acima).
+
+    - Exemplo: `stack run generate M`
 
 -   `stack test` roda os testes do programa. Os testes são especificados em `labirinto/test/Spec.hs`.
 
--   #### Observação: Os labirintos MAZE00 - MAZE05 são usados nos testes. Assim, é importante que eles estejam presentes na pasta `labirinto/resources/mazes` ao rodar o comando `stack test`
-
-TODO: stack run generateMaze
+-   #### Observação: Os labirintos MAZE00 - MAZE06 são usados nos testes. Assim, é importante que eles estejam presentes na pasta `labirinto/resources/mazes` ao rodar o comando `stack test`
 
 Assim, a estrutura do projeto deve se econtrar na forma:
 

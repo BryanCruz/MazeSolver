@@ -127,7 +127,7 @@ getLengthsOfPath mazeName = do
 
   let g = GC.matrixToGraph matrix
   let nodes = getNodes g
-  let p = dfs g (head nodes) (last nodes)
+  let (p, _) = dfs g (head nodes) (last nodes)
   let drawn = GC.drawColorMap matrix p
   return ((length matrix, length $ head matrix), (length drawn, length $ head drawn))
 
@@ -138,22 +138,22 @@ testSnd :: Edge (Node Int, Node Int) -> Bool
 testSnd e@(Edge (a, b)) = getSnd e == b
 
 -- Test if all nodes returned from solvers are present in the original graph
-testNodesPresent :: (Graph Int -> Node Int -> Node Int -> [Node Int]) -> Graph Int -> Bool
+testNodesPresent :: (Graph Int -> Node Int -> Node Int -> ([Node Int], [Node Int])) -> Graph Int -> Bool
 testNodesPresent alg g = all (`elem` graphNodes) pathNodes
   where
     graphNodes = getNodes g
-    pathNodes  = if not $ null graphNodes
-                 then alg g (head graphNodes) (last graphNodes)
-                 else []
+    (pathNodes, _)  = if not $ null graphNodes
+                      then alg g (head graphNodes) (last graphNodes)
+                      else ([], [])
 
 -- Test if all edges returned from solvers are present in the original graph
-testEdgesPresent :: (Graph Int -> Node Int -> Node Int -> [Node Int]) -> Graph Int -> Bool
+testEdgesPresent :: (Graph Int -> Node Int -> Node Int -> ([Node Int], [Node Int])) -> Graph Int -> Bool
 testEdgesPresent alg g = all (`elem` graphEdges) pathEdges
   where
     graphEdges = getEdges g
     graphNodes = getNodes g
 
-    pathNodes = alg g (head graphNodes) (last graphNodes)
+    (pathNodes, _) = alg g (head graphNodes) (last graphNodes)
     pathEdges = if not $ null graphEdges
                 then nodesToEdges pathNodes
                 else []
