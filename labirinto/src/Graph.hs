@@ -35,8 +35,7 @@ getNodes (Graph ns) = map fst ns
 getEdges :: Graph a -> [Edge a]
 getEdges (Graph ns) = concatMap snd ns
 
--- addEdge :: Graph a -> Node a -> Node a -> Graph a
--- addEdge (Graph ns) u v 
---
--- addNode :: Graph a -> Node a -> Graph a
--- addNode (Graph ns) u = Graph (if u `elem` $ map fst ns then g else (u, []):ns)
+addEdge :: Eq a => Graph a -> Node a -> Node a -> Graph a
+addEdge (Graph ns) u v = addEdge' (addEdge' (Graph ns) u v) v u
+  where
+    addEdge' (Graph ns) u v = Graph [if x == u then (u, Edge (u, v):es) else (x, es) | (x, es) <- ns]
