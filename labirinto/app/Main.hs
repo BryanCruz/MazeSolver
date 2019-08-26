@@ -40,10 +40,10 @@ main = do
   let mazeMatrix = getMatrixFromImage mazeImage
   let graph = matrixToGraph mazeMatrix
 
-  -- runAlg dfs "DFS" mazeName graph mazeMatrix
-  -- runAlg bfs "BFS" mazeName graph mazeMatrix
+  runAlg dfs "DFS" mazeName graph mazeMatrix
   runAlg aStar "ASTAR" mazeName graph mazeMatrix
-
+  runAlg bfs "BFS" mazeName graph mazeMatrix
+ 
   return ()
 
 runAlg alg name mazeName graph mazeMatrix = do
@@ -53,13 +53,15 @@ runAlg alg name mazeName graph mazeMatrix = do
   putStrLn $ "== " ++ name ++ " =="
   
   start <- getCPUTime
-  let path = alg graph origin target
-  end <- path `deepseq` getCPUTime
+  let (path, visitedNodes) = alg graph origin target
+  end <- path `deepseq` (visitedNodes `deepseq` getCPUTime)
 
+  print ("Nodes Visited " ++ (show (length visitedNodes)))
   let diff = fromIntegral (end - start) / (10^12)
-  printf (name ++ " Time: %0.6f sec\n") (diff :: Double)
+  printf "Time: %0.6f sec\n" (diff :: Double)
 
-  let solutionMatrix = drawPath mazeMatrix path
+  let colorMapMatrix = drawColorMap mazeMatrix visitedNodes
+  let solutionMatrix = drawPath colorMapMatrix path
   savePngImage (outPath (mazeName ++ "_" ++ name)) (ImageRGB8 (getImageFromMatrix solutionMatrix))
 
   putStrLn "========"

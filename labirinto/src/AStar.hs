@@ -8,10 +8,9 @@ import Data.Foldable (toList)
 manhattan :: Node (Int, Int) -> Node (Int, Int) -> Int
 manhattan (Node (x1, y1)) (Node (x2, y2)) = abs (x1 - x2) + abs (y1 - y2)
 
---    :: Maze             -> Initial node    -> End node        -> Path
-aStar :: Graph (Int, Int) -> Node (Int, Int) -> Node (Int, Int) -> [Node (Int, Int)]
-aStar g st end = reverse $ aStar' [] [(0, st)] 0 g end
-
+--    :: Maze             -> Initial node    -> End node        -> Path and Visited Nodes
+aStar :: Graph (Int, Int) -> Node (Int, Int) -> Node (Int, Int) -> ([Node (Int, Int)], [Node (Int, Int)])
+aStar g st end = ([], reverse $ aStar' [] [(0, st)] 0 g end)
 
 aStar' visited queue currentCost g end
   | st == end   = visited'

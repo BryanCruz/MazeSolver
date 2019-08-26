@@ -18,9 +18,10 @@ pixelToDigit (PixelRGB8 r g b)
 
 digitToPixel :: Int -> Int -> PixelRGB8
 digitToPixel p maxDigit
-  | p == -1 = PixelRGB8 0 0 0 -- Black pixel for -1
-  | p == 0 = PixelRGB8 255 255 255 -- White pixel for 0
-  | otherwise = interpolatedPixel -- Intepolated pixel color for any other number
+  | p == -1 = PixelRGB8 0 0 0 -- Black pixel for -1 (wall)
+  | p == -2 = PixelRGB8 255 255 0 -- Yellow pixel for -2 (path)
+  | p == 0 = PixelRGB8 255 255 255 -- White pixel for 0 (floor)
+  | otherwise = interpolatedPixel -- Intepolated pixel color for any other number (heatmap)
     where
       interpolatedPixel = PixelRGB8 (fromIntegral r) 0 (fromIntegral b)
       r = (p * 255) `quot` maxDigit

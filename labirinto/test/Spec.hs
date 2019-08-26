@@ -128,7 +128,7 @@ getLengthsOfPath mazeName = do
   let g = GC.matrixToGraph matrix
   let nodes = getNodes g
   let p = dfs g (head nodes) (last nodes)
-  let drawn = GC.drawPath matrix p
+  let drawn = GC.drawColorMap matrix p
   return ((length matrix, length $ head matrix), (length drawn, length $ head drawn))
 
 testFst :: Edge (Node Int, Node Int) -> Bool

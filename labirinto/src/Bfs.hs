@@ -10,9 +10,12 @@ import Debug.Trace
   Second argument is the start node of type 'Node'
   Third argument is the target node of type 'Node'
   -}
-bfs :: (Show a, Eq a) => Graph a -> Node a -> Node a -> [Node a]
-bfs g u v = buildPath (bfs' g (u,u) v [] []) v
+bfs :: (Show a, Eq a) => Graph a -> Node a -> Node a -> ([Node a], [Node a])
+bfs g u v = (resultPath, visitedNodes)
       where
+        result = (bfs' g (u,u) v [] [])
+        visitedNodes = getVisited result
+        resultPath = buildPath result v
         {-|
           Bfs' function returns a list of tuples, of type '(Node, Node)',
           which the first element is node visiqueue'        = queue ++ neighborsted and the second element is
