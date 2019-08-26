@@ -27,11 +27,19 @@ graphInit xs = Graph [(Node x, [Edge (Node x, Node y) | y <- xs, manhattan x y =
   where
     manhattan (a, b) (c, d) = abs (a - c) + abs (b - d)
 
+drawColorMap :: [[Int]] -> [Node (Int, Int)] -> [[Int]]
+drawColorMap = drawInMatrix False
+
 drawPath :: [[Int]] -> [Node (Int, Int)] -> [[Int]]
-drawPath m ns = m'
+drawPath = drawInMatrix True
+
+drawInMatrix :: Bool -> [[Int]] -> [Node (Int, Int)] -> [[Int]]
+drawInMatrix drawingPath m ns = m'
   where
     indexedPath :: [(Int, Node (Int, Int))]
-    indexedPath = zip [1..] ns
+    indexedPath = zip pixelValues ns
+
+    pixelValues = if drawingPath then [(-2), (-2)..] else [1,2..]    
 
     m' :: [[Int]]
     m' = foldr insertNode m indexedPath
